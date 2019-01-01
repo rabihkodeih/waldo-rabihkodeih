@@ -43,6 +43,7 @@ def generate_samples(image_path, num_samples=100, samples_folder='samples', posi
     # generate samples
     samples = []
     for i in range(num_samples):
+        sys.stdout.write('sample {} of {}\n'.format(i + 1, num_samples))
         sample_width = random.randint(min_sample_width, max_sample_width)
         sample_height = random.randint(min_sample_height, max_sample_height)
         x = random.randint(0, width - sample_width)
@@ -63,7 +64,7 @@ def generate_samples(image_path, num_samples=100, samples_folder='samples', posi
                         'height': sample_height,
                         'name': sample_name,
                         'path': sample_path,
-                        'image_path': image_path})
+                        'source_image_path': image_path})
         cv2.imwrite(sample_path, sample)
 
     return samples
@@ -89,15 +90,12 @@ if __name__ == '__main__':
             image_path, num_samples=2, samples_folder='positive_samples', positive=True)
         negative_samples += generate_samples(
             image_path, num_samples=2, samples_folder='negative_samples', positive=False)
-        # TODO: generate negative samples
 
     # write samples meta data to disk
     with open(os.path.join(root_path, 'positive_samples.json'), 'w') as f:
         json.dump(positive_samples, f, indent=4, sort_keys=True)
     with open(os.path.join(root_path, 'negative_samples.json'), 'w') as f:
         json.dump(negative_samples, f, indent=4, sort_keys=True)
-
-    cv2.destroyAllWindows()
 
     print('\nDone.')
 
