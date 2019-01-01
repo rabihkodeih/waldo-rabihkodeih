@@ -112,3 +112,6 @@ venv.bak/
 # other
 .DS_Store
 init_env.sh
+sample*
+*.json
+

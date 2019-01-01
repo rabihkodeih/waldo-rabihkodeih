@@ -4,6 +4,7 @@ import cv2
 import json
 import random
 import shutil
+import numpy as np
 
 from settings import ROOT_SAMPLES_PATH
 from settings import MIN_TEST_SAMPLE_WIDTH
@@ -17,8 +18,9 @@ def get_image_path(testcase_path):
     return os.path.join(testcase_path, image_path)
 
 
-def generate_samples(image_path, num_samples=100, samples_folder='samples'):
-    sys.stdout.write('generating positive samples for "{}"\n'.format(image_path))
+def generate_samples(image_path, num_samples=100, samples_folder='samples', positive=True):
+    label = 'positive' if positive else 'negative'
+    sys.stdout.write('generating {} samples for "{}"\n'.format(label, image_path))
     base_image_path = os.path.split(image_path)[-2]
     _, extension = os.path.splitext(image_path)
     samples_root_path = os.path.join(base_image_path, samples_folder)
@@ -50,12 +52,18 @@ def generate_samples(image_path, num_samples=100, samples_folder='samples'):
         sample_name = 'sample{}{}'.format(i + 1, extension)
         sample_path = os.path.join(samples_root_path, sample_name)
         sample = img[y:y + sample_height, x:x + sample_width]
+        if not positive:
+            sample = cv2.flip(sample, -1)
+            noise = np.zeros(sample.shape)
+            cv2.randn(noise, 0, 500)
+            sample = sample + noise
         samples.append({'x': x,
                         'y': y,
                         'width': sample_width,
                         'height': sample_height,
                         'name': sample_name,
-                        'path': sample_path})
+                        'path': sample_path,
+                        'image_path': image_path})
         cv2.imwrite(sample_path, sample)
 
     return samples
@@ -69,6 +77,7 @@ if __name__ == '__main__':
     # initialization
     root_path = ROOT_SAMPLES_PATH
     positive_samples = []
+    negative_samples = []
 
     # generate samples
     for testcase in os.listdir(root_path):
@@ -76,12 +85,17 @@ if __name__ == '__main__':
         if not os.path.isdir(testcase_path):
             continue
         image_path = get_image_path(testcase_path)
-        positive_samples += generate_samples(image_path, num_samples=2, samples_folder='positive_samples')
+        positive_samples += generate_samples(
+            image_path, num_samples=2, samples_folder='positive_samples', positive=True)
+        negative_samples += generate_samples(
+            image_path, num_samples=2, samples_folder='negative_samples', positive=False)
         # TODO: generate negative samples
 
     # write samples meta data to disk
     with open(os.path.join(root_path, 'positive_samples.json'), 'w') as f:
         json.dump(positive_samples, f, indent=4, sort_keys=True)
+    with open(os.path.join(root_path, 'negative_samples.json'), 'w') as f:
+        json.dump(negative_samples, f, indent=4, sort_keys=True)
 
     cv2.destroyAllWindows()
 
