@@ -4,13 +4,14 @@ import cv2
 import json
 import random
 import shutil
+import argparse
 import numpy as np
 
-from settings import ROOT_SAMPLES_PATH
-from settings import MIN_TEST_SAMPLE_WIDTH
-from settings import MIN_TEST_SAMPLE_HEIGHT
-from settings import MAX_TEST_SAMPLE_WIDTH_RATIO
-from settings import MAX_TEST_SAMPLE_HEIGHT_RATIO
+
+MAX_TEST_SAMPLE_WIDTH_RATIO = 0.9
+MAX_TEST_SAMPLE_HEIGHT_RATIO = 0.9
+MIN_TEST_SAMPLE_WIDTH = 100
+MIN_TEST_SAMPLE_HEIGHT = 50
 
 
 def get_image_path(testcase_path):
@@ -18,7 +19,10 @@ def get_image_path(testcase_path):
     return os.path.join(testcase_path, image_path)
 
 
-def generate_samples(image_path, num_samples=100, samples_folder='samples', positive=True):
+def generate_samples(image_path,
+                     num_samples=10,
+                     samples_folder='samples',
+                     positive=True):
     label = 'positive' if positive else 'negative'
     sys.stdout.write('generating {} samples for "{}"\n'.format(label, image_path))
     base_image_path = os.path.split(image_path)[-2]
@@ -71,33 +75,48 @@ def generate_samples(image_path, num_samples=100, samples_folder='samples', posi
 
 
 if __name__ == '__main__':
-    print('Starting\n')
 
-    # TODO: convert to command line
+    # define command line parser and add arguments
+    parser = argparse.ArgumentParser()
+    num_samples_help_text = ('Number of samples per input image, applies'
+                             ' to both positive and negative samples')
+    parser.add_argument('num_samples', help=num_samples_help_text, type=int)
+    root_images_path_help_text = ('This is the root path of all root images '
+                                  'that will be used to generate positive and '
+                                  'negative samples.')
+    parser.add_argument('--root_images_path', help=root_images_path_help_text, type=str)
 
-    # initialization
-    root_path = ROOT_SAMPLES_PATH
+    # parse command line arguments
+    args = parser.parse_args()
+    num_samples = args.num_samples
+    root_images_path = args.root_images_path
+    if root_images_path is None:
+        root_images_path = 'images'
+    sys.stdout.write('num_samples : {}\n'.format(num_samples))
+    sys.stdout.write('root_images_path : {}\n'.format(root_images_path))
+
+    # initialize samples data structures
     positive_samples = []
     negative_samples = []
 
     # generate samples
-    for testcase in os.listdir(root_path):
-        testcase_path = os.path.join(root_path, testcase)
+    for testcase in os.listdir(root_images_path):
+        testcase_path = os.path.join(root_images_path, testcase)
         if not os.path.isdir(testcase_path):
             continue
         image_path = get_image_path(testcase_path)
         positive_samples += generate_samples(
-            image_path, num_samples=2, samples_folder='positive_samples', positive=True)
+            image_path, num_samples=num_samples, samples_folder='positive_samples', positive=True)
         negative_samples += generate_samples(
-            image_path, num_samples=2, samples_folder='negative_samples', positive=False)
+            image_path, num_samples=num_samples, samples_folder='negative_samples', positive=False)
 
     # write samples meta data to disk
-    with open(os.path.join(root_path, 'positive_samples.json'), 'w') as f:
+    with open(os.path.join(root_images_path, 'positive_samples.json'), 'w') as f:
         json.dump(positive_samples, f, indent=4, sort_keys=True)
-    with open(os.path.join(root_path, 'negative_samples.json'), 'w') as f:
+    with open(os.path.join(root_images_path, 'negative_samples.json'), 'w') as f:
         json.dump(negative_samples, f, indent=4, sort_keys=True)
 
-    print('\nDone.')
+    sys.stdout.write('\nDone.')
 
 
 # end of file

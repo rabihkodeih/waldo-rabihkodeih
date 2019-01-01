@@ -26,10 +26,10 @@ class UnsupportedFormatOrMissingFile(Exception):
     pass
 
 
-def _subimage(image_path, template_path,
-              resample_width=RESAMPLE_WIDTH,
-              rescale_width=MIN_RESCALE_WIDTH,
-              cutoff_match_threshold=CUTOFF_MATCH_THRESHOLD):
+def subimage(image_path, template_path,
+             resample_width=RESAMPLE_WIDTH,
+             rescale_width=MIN_RESCALE_WIDTH,
+             cutoff_match_threshold=CUTOFF_MATCH_THRESHOLD):
     # TODO: add docstring
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     template = cv2.imread(template_path, cv2.IMREAD_GRAYSCALE)
@@ -63,8 +63,15 @@ def _subimage(image_path, template_path,
 
 
 @profile_execution_time
-def subimage(*args, **kwargs):
-    return _subimage(*args, **kwargs)
+def cropped(image_path_1, image_path_2):
+    # TODO: add docstring
+    args = [(image_path_1, image_path_2),
+            (image_path_2, image_path_1)]
+    for path1, path2 in args:
+        match = subimage(path1, path2)
+        if match is not None:
+            break
+    return match
 
 
 def plot_recantgles(image_path, rectangles, title='Image', color=(0, 0, 255)):

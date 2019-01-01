@@ -1,7 +1,9 @@
 import sys
 import cv2
-from common.utils import subimage, UnsupportedFormatOrMissingFile
+from common.utils import subimage
+from common.utils import cropped
 from common.utils import plot_recantgles
+from common.utils import UnsupportedFormatOrMissingFile
 
 
 if __name__ == '__main__':
@@ -21,17 +23,18 @@ if __name__ == '__main__':
 #     image_path = './images/image1/image.jpg'
 #     template_path = './images/image1/positive_samples/sample1.jpg'
 
-    image_path = './images/test2.jpg'
-    template_path = './images/test2.jpg'
+    image_1 = './unit_tests/images/test1.jpg'
+    image_2 = './unit_tests/images/test2.jpg'
     # TODO: assert both files exists
 
     try:
-        args = [(image_path, template_path),
-                (template_path, image_path)]
-        for path1, path2 in args:
-            match = subimage(path1, path2)
-            if match is not None:
-                break
+        match = cropped(image_1, image_2)
+#         args = [(image_path, template_path),
+#                 (template_path, image_path)]
+#         for path1, path2 in args:
+#             match = subimage(path1, path2)
+#             if match is not None:
+#                 break
     except UnsupportedFormatOrMissingFile:
         sys.stdout.write("Error: One or both of your input images is missing or has an unsupported image format.\n")
     else:
@@ -43,6 +46,7 @@ if __name__ == '__main__':
         print();print();print()
         print('=' * 70)
         print()
+
     # plot_recantgles(image_path, [match])
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
