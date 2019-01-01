@@ -47,14 +47,15 @@ def generate_samples(image_path, num_samples=100, samples_folder='samples'):
         y = random.randint(0, height - sample_height)
         assert x >= 0
         assert y >= 0
-        sample_name = 'sample{}.{}'.format(i + 1, extension)
+        sample_name = 'sample{}{}'.format(i + 1, extension)
+        sample_path = os.path.join(samples_root_path, sample_name)
         sample = img[y:y + sample_height, x:x + sample_width]
         samples.append({'x': x,
                         'y': y,
                         'width': sample_width,
                         'height': sample_height,
-                        'name': sample_name})
-        sample_path = os.path.join(samples_root_path, sample_name)
+                        'name': sample_name,
+                        'path': sample_path})
         cv2.imwrite(sample_path, sample)
 
     return samples
@@ -63,16 +64,25 @@ def generate_samples(image_path, num_samples=100, samples_folder='samples'):
 if __name__ == '__main__':
     print('Starting\n')
 
+    # TODO: convert to command line
+
+    # initialization
     root_path = ROOT_SAMPLES_PATH
+    positive_samples = []
+
+    # generate samples
     for testcase in os.listdir(root_path):
         testcase_path = os.path.join(root_path, testcase)
         if not os.path.isdir(testcase_path):
             continue
         image_path = get_image_path(testcase_path)
-        positive_samples = generate_samples(image_path, num_samples=2, samples_folder='positive_samples')
-        with open(os.path.join(root_path, 'positive_samples.json'), 'w') as f:
-            json.dump(positive_samples, f, indent=4, sort_keys=True)
+        positive_samples += generate_samples(image_path, num_samples=2, samples_folder='positive_samples')
         # TODO: generate negative samples
+
+    # write samples meta data to disk
+    with open(os.path.join(root_path, 'positive_samples.json'), 'w') as f:
+        json.dump(positive_samples, f, indent=4, sort_keys=True)
+
     cv2.destroyAllWindows()
 
     print('\nDone.')
