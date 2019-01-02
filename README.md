@@ -10,6 +10,7 @@ The project is emplemented as a command line tool with the following points:
   * scaling and rotations are not accounted for, only translations
   * most image formats are supported including jpeg with lossy compression
   * a normalized confidence score is used to decide on positives or negatives
+
 See below for a more detailed explanation.
 
 
