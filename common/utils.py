@@ -122,8 +122,9 @@ def plot_recantgles(image_path, rectangles, title='Image', color=(0, 0, 255)):
     for rect in rectangles:
         if rect:
             p1, p2 = rect
-            cv2.rectangle(img, p1, p2, color)
+            cv2.rectangle(img, p1, p2, color, thickness=2)
     cv2.imshow(title, img)
+    return img
 
 
 # end of file
