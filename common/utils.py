@@ -66,7 +66,6 @@ def subimage(image_path, template_path,
     return match, confidence
 
 
-@profile_execution_time
 def cropped(image_path_1, image_path_2, confidence_threshold):
     # TODO: add docstring
     args = [(image_path_1, image_path_2),
