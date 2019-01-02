@@ -1,55 +1,32 @@
 import sys
-import cv2
-from common.utils import subimage
+from settings import CONFIDENCE_THRESHOLD
 from common.utils import cropped
-from common.utils import plot_recantgles
 from common.utils import UnsupportedFormatOrMissingFile
 
 
 if __name__ == '__main__':
     sys.stdout.write('\n')
 
-    # TODO: state assumptions:
-    #    - no scaling is allowed
-    #    - based on normed correlation formula
-    #    - sweeping window and runtime
-    #    - resamples to fixed size in case sample size allows it
-    #    - etc...
-    #    - write README file
-    # TODO: implement the general case with all necessary checks:
-    #        one image must be completely within another one
-    # TODO: implement as a command line
-
-#     image_path = './images/image1/image.jpg'
-#     template_path = './images/image1/positive_samples/sample1.jpg'
-
     image_1 = './unit_tests/images/test1.jpg'
-    image_2 = './unit_tests/images/test2.jpg'
-    # TODO: assert both files exists
+    image_2 = './unit_tests/images/test4.jpg'
+    confidence_threshold = CONFIDENCE_THRESHOLD
+    # TODO: args, image1 and image2 and cutoff_confidence (optional, defaults to the value in settings)
 
     try:
-        match = cropped(image_1, image_2)
-#         args = [(image_path, template_path),
-#                 (template_path, image_path)]
-#         for path1, path2 in args:
-#             match = subimage(path1, path2)
-#             if match is not None:
-#                 break
+        match, index, confidence = cropped(image_1, image_2, confidence_threshold)
     except UnsupportedFormatOrMissingFile:
-        sys.stdout.write("Error: One or both of your input images is missing or has an unsupported image format.\n")
+        sys.stdout.write('Error: One or both of input images is missing or has an unsupported format.\n')
     else:
-        print()
-        print('=' * 70)
-        print();print();print()
-        from pprint import pprint
-        print(match)
-        print();print();print()
-        print('=' * 70)
-        print()
-
-    # plot_recantgles(image_path, [match])
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
+        if match is None:
+            sys.stdout.write('No image appears to be cropped.\n')
+        else:
+            cropped_image = [image_1, image_2][index]
+            sys.stdout.write('Image "{}" appears to be cropped.\n'.format(cropped_image))
+            sys.stdout.write('Top left corner (x-horizontal, y-vertical) : {}\n'.format(match[0]))
+        if confidence > 0.0:
+            sys.stdout.write('Confidence score : {}\n'.format(confidence))
+        else:
+            sys.stdout.write('Incompatible dimenssions\n')
 
     sys.stdout.write('\n')
 

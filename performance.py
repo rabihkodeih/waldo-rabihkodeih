@@ -10,6 +10,7 @@ BASE_DIR = os.path.dirname(__file__)
 
 
 if __name__ == '__main__':
+
     # define command line parser and add arguments
     parser = argparse.ArgumentParser()
     root_images_path_help_text = ('This is the root path of all root images '

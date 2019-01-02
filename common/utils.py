@@ -3,8 +3,10 @@ import time
 import cv2
 
 from functools import wraps
-from settings import CUTOFF_MATCH_THRESHOLD, RESAMPLE_WIDTH, MIN_TEMPLATE_RESCALE_WIDTH,\
-    MIN_IMAGE_RESCALE_WIDTH
+from settings import CONFIDENCE_THRESHOLD
+from settings import RESAMPLE_WIDTH
+from settings import MIN_TEMPLATE_RESCALE_WIDTH
+from settings import MIN_IMAGE_RESCALE_WIDTH
 
 
 def profile_execution_time(func):
@@ -31,7 +33,7 @@ def subimage(image_path, template_path,
              resample_width=RESAMPLE_WIDTH,
              min_template_rescale_width=MIN_TEMPLATE_RESCALE_WIDTH,
              min_image_rescale_width=MIN_IMAGE_RESCALE_WIDTH,
-             cutoff_match_threshold=CUTOFF_MATCH_THRESHOLD):
+             confidence_threshold=CONFIDENCE_THRESHOLD):
     # TODO: add docstring
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     template = cv2.imread(template_path, cv2.IMREAD_GRAYSCALE)
@@ -57,7 +59,7 @@ def subimage(image_path, template_path,
                 scale = 1.0
         result = cv2.matchTemplate(img, template, cv2.TM_CCOEFF_NORMED)
         _, confidence, _, match_location = cv2.minMaxLoc(result)
-        if confidence >= cutoff_match_threshold:
+        if confidence >= confidence_threshold:
             x, y = match_location
             x, y = int(x/scale), int(y/scale)
             match = ((x, y), (x + tmpl_width, y + tmpl_height))
@@ -65,17 +67,17 @@ def subimage(image_path, template_path,
 
 
 @profile_execution_time
-def cropped(image_path_1, image_path_2):
+def cropped(image_path_1, image_path_2, confidence_threshold):
     # TODO: add docstring
     args = [(image_path_1, image_path_2),
             (image_path_2, image_path_1)]
     confidence = 0.0
-    for path1, path2 in args:
-        match, tmp_confidence = subimage(path1, path2)
+    for i, (path1, path2) in enumerate(args):
+        match, tmp_confidence = subimage(path1, path2, confidence_threshold=confidence_threshold)
         confidence = max(confidence, tmp_confidence)
         if match is not None:
             break
-    return match, confidence
+    return match, i, confidence
 
 
 def plot_recantgles(image_path, rectangles, title='Image', color=(0, 0, 255)):
