@@ -25,16 +25,46 @@ def profile_execution_time(func):
 
 
 class UnsupportedFormatOrMissingFile(Exception):
-    # TODO: add docstring
+    '''
+    Excpetion to be raised in case of a missing image file
+    or unsupported image format.
+    '''
     pass
 
 
 def subimage(image_path, template_path,
              resample_width=RESAMPLE_WIDTH,
-             min_template_rescale_width=MIN_TEMPLATE_RESCALE_WIDTH,
              min_image_rescale_width=MIN_IMAGE_RESCALE_WIDTH,
+             min_template_rescale_width=MIN_TEMPLATE_RESCALE_WIDTH,
              confidence_threshold=CONFIDENCE_THRESHOLD):
-    # TODO: add docstring
+    '''
+    This function abstracts away the main logic of doing the cropping analysis
+    through a template matching algorithm. It decideds wether template image
+    is contained within the source image.
+
+    @param image_path:
+        the relative or full path of the source image
+
+    @param template_path:
+        the relative or full path of the template image
+
+    @param resample_width:
+        the width in pixels to resample the source image to, in order to speedup
+        template matching
+
+    @param min_image_rescale_width:
+        minimum width in pixels of the image required to apply rescaling
+
+    @param min_template_rescale_width:
+        minimum width in pixels of the template required to carry on with rescaling,
+        tested after applying rescaling to the template
+
+    @param confidence_threshold:
+        the minimum level of confidence score required to decide positively
+
+    @return:
+        <two-points match tuple>, <confidence-score floating value>
+    '''
     img = cv2.imread(image_path, cv2.IMREAD_GRAYSCALE)
     template = cv2.imread(template_path, cv2.IMREAD_GRAYSCALE)
     try:
@@ -67,7 +97,10 @@ def subimage(image_path, template_path,
 
 
 def cropped(image_path_1, image_path_2, confidence_threshold):
-    # TODO: add docstring
+    '''
+    This functions applies the main matching algorithm to its
+    inputs in the appropriate order.
+    '''
     args = [(image_path_1, image_path_2),
             (image_path_2, image_path_1)]
     confidence = 0.0
@@ -80,7 +113,10 @@ def cropped(image_path_1, image_path_2, confidence_threshold):
 
 
 def plot_recantgles(image_path, rectangles, title='Image', color=(0, 0, 255)):
-    # TODO: add docstring
+    '''
+    Convinience function used for debugging by plotting a list
+    of rectangles onto an image.
+    '''
     img = cv2.imread(image_path)
     cv2.namedWindow(title, cv2.WINDOW_NORMAL)
     for rect in rectangles:
