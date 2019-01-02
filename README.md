@@ -159,9 +159,9 @@ There are a possible number of ways this work could evolve:
 
 1. Using the [fast template matching](http://scribblethink.org/Work/nvisionInterface/vi95_lewis.pdf) algorithm.
 2. Using [fast normalized cross correlation](http://i81pc23.itec.uni-karlsruhe.de/Publikationen/SPIE01_BriechleHanebeck_CrossCorr.pdf).
-3. Using [integral image based weak classifiers](http://i81pc23.itec.uni-karlsruhe.de/Publikationen/SPIE01_BriechleHanebeck_CrossCorr.pdf).
+3. Using [integral image based weak classifiers](http://www.jprr.org/index.php/jprr/article/view/516/193).
 4. Using any of [scalable reverse image search algorithms](https://www.quora.com/What-is-the-algorithm-used-by-Googles-reverse-image-search-i-e-search-by-image-What-algorithms-would-I-need-to-understand-to-create-similar-functionality-on-a-small-scale?redirected_qid=828413).
-5. Using [large scale reverse image search](https://www.quora.com/What-is-the-algorithm-used-by-Googles-reverse-image-search-i-e-search-by-image-What-algorithms-would-I-need-to-understand-to-create-similar-functionality-on-a-small-scale?redirected_qid=828413).
-6. Using [feature matching and homography](https://www.quora.com/What-is-the-algorithm-used-by-Googles-reverse-image-search-i-e-search-by-image-What-algorithms-would-I-need-to-understand-to-create-similar-functionality-on-a-small-scale?redirected_qid=828413).
+5. Using [large scale reverse image search](https://pdfs.semanticscholar.org/9fe8/9b3bd51ab9f1fe9e883a646172afb9f3d8ba.pdf?_ga=2.162171579.646508774.1546439148-358020810.1546003914).
+6. Using [feature matching and homography](https://docs.opencv.org/3.0-beta/doc/py_tutorials/py_feature2d/py_feature_homography/py_feature_homography.html).
 
 <hr>
