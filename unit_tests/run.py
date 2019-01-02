@@ -12,7 +12,7 @@ class TestSubImage(unittest.TestCase):
         path1 = os.path.join(BASE_DIR, 'images', 'test1.jpg')
         path2 = os.path.join(BASE_DIR, 'images', 'test2.jpg')
         match, _ = subimage(path1, path2)
-        self.assertEqual(match, ((91, 232), (201, 369)))
+        self.assertEqual(match, ((91, 233), (201, 370)))
         sys.stdout.write('\nTest "test_template_in_image" passed')
 
     def test_template_not_in_image(self):
