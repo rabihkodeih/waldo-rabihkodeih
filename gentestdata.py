@@ -60,7 +60,7 @@ def generate_samples(image_path,
         if not positive:
             sample = cv2.flip(sample, -1)
             noise = np.zeros(sample.shape)
-            cv2.randn(noise, 0, 500)
+            cv2.randu(noise, 100, 900)
             sample = sample + noise
         samples.append({'x': x,
                         'y': y,
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     with open(os.path.join(root_images_path, 'negative_samples.json'), 'w') as f:
         json.dump(negative_samples, f, indent=4, sort_keys=True)
 
-    sys.stdout.write('\nDone.')
+    sys.stdout.write('\nDone.\n')
 
 
 # end of file

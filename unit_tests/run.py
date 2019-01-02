@@ -11,21 +11,21 @@ class TestSubImage(unittest.TestCase):
     def test_template_in_image(self):
         path1 = os.path.join(BASE_DIR, 'images', 'test1.jpg')
         path2 = os.path.join(BASE_DIR, 'images', 'test2.jpg')
-        match = subimage(path1, path2)
+        match, _ = subimage(path1, path2)
         self.assertEqual(match, ((91, 232), (201, 369)))
         sys.stdout.write('\nTest "test_template_in_image" passed')
 
     def test_template_not_in_image(self):
         path1 = os.path.join(BASE_DIR, 'images', 'test1.jpg')
         path2 = os.path.join(BASE_DIR, 'images', 'test4.jpg')
-        match = subimage(path1, path2)
+        match, _ = subimage(path1, path2)
         self.assertEqual(match, None)
         sys.stdout.write('\nTest "test_template_not_in_image" passed')
 
     def test_incompatible_sizes(self):
         path1 = os.path.join(BASE_DIR, 'images', 'test1.jpg')
         path2 = os.path.join(BASE_DIR, 'images', 'test3.jpg')
-        match = subimage(path1, path2)
+        match, _ = subimage(path1, path2)
         self.assertEqual(match, None)
         sys.stdout.write('\nTest "test_incompatible_sizes" passed')
 
@@ -39,7 +39,7 @@ class TestSubImage(unittest.TestCase):
         images = ('test1.jpg', 'test2.jpg', 'test3.jpg', 'test4.jpg')
         for image, match in zip(images, matches):
             path = os.path.join(BASE_DIR, 'images', image)
-            self.assertEqual(match, subimage(path, path))
+            self.assertEqual(match, subimage(path, path)[0])
         sys.stdout.write('\nTest "test_image_in_itself" passed')
 
 
